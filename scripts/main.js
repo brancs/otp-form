@@ -1,5 +1,7 @@
 const inputs = document.querySelectorAll(".otp-card-inputs input");
 const button = document.querySelector(".otp-card button");
+const maxCodeLength = 8;
+let finalResult = "";
 
 inputs.forEach(input => {
   let lastInputStatus = 0;
@@ -19,13 +21,15 @@ inputs.forEach(input => {
       lastInputStatus = 1;
 
     } else {
-      const reg = /^[0-9]+$/;
+      const reg = /^[A-Za-z0-9]+$/;
 
       if (!reg.test(currentInput.value)) {
 
-        currentInput.value = currentInput.value.replace(/\D/g, "");
+        currentInput.value = currentInput.value.replace(/[^A-Za-z0-9]/g, "");
 
       } else if (currentInput.value) {
+
+        currentInput.value = currentInput.value.toUpperCase();
 
         if (nextInput) {
           nextInput.focus();
@@ -34,8 +38,22 @@ inputs.forEach(input => {
           lastInputStatus = 0;
         }
 
+        if (finalResult.length <= maxCodeLength)
+          finalResult += currentInput.value;
       }
     }
 
   };
 })
+
+function resetForm() {
+  inputs.forEach(input => {
+    input.value = "";
+  });
+  finalResult = "";
+}
+
+button.onclick = () => {
+  alert(finalResult);
+  resetForm();
+};
